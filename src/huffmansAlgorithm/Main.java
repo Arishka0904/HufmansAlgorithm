@@ -1,23 +1,40 @@
 package huffmansAlgorithm;
 
+import static huffmansAlgorithm.CompressedFileWriter.writeCompressedFile;
+import static huffmansAlgorithm.DecompressedFileWriter.writeDecompressedResultToFile;
+import static huffmansAlgorithm.FileNameReader.isFileCompressed;
+import static huffmansAlgorithm.FileNameReader.readFileName;
+
 public class Main {
     public static void main(String[] args) {
-        FilePathReader filePath = new FilePathReader();
 
+        String fileName = readFileName();
 
-        String path = filePath.readPath();
-        String fileExtension = filePath.getFileExtension(path);
+        if (isFileCompressed(fileName)) {
+            DecompressorResult deCompressor = DecompressorResult
+                    .createBuilder(fileName)
+                    .loadDictionaryTable()
+                    .loadBitsFromCompressedFile()
+                    .restoreOriginFile()
+                    .convertListToBytesArray()
+                    .build();
 
-        if (fileExtension.equals("hf")) {
-            DeCompressor deCompressor = new DeCompressor(path);
+            writeDecompressedResultToFile(deCompressor);
+        }
 
-        } else if (fileExtension.equals("???")) { //todo
-         //   Compressor compressor = new Compressor();//Не хранить путь в объекте
+        else {
+            CompressionResult result = CompressionResult
+                    .createBuilder()
+                    .readFileToByteArray(fileName)
+                    .countFrequency()
+                    .buildHuffmanTree()
+                    .makeHuffmanDictionaryTable()
+                    .makeIntBitsResult()
+                    .build();
 
-
-            System.out.println(path);
-            System.out.println(fileExtension);
+            writeCompressedFile(result);
         }
     }
 }
+
 

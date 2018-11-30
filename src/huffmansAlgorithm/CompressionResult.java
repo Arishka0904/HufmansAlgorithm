@@ -1,44 +1,38 @@
 package huffmansAlgorithm;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class CompressionResult {
-    String bits;
-    List<Bit> bitResult;
+    private final String fileName;
+    private final List<Bit> bytes;
+    private final Map<Integer, List<Bit>> dictionaryTable;
 
-    public CompressionResult(String bits) {
-        this.bits = bits;
+    private CompressionResult(String fileName, List<Bit> bytes, Map<Integer, List<Bit>> dictionaryTable) {
+        this.fileName = fileName;
+        this.bytes = bytes;
+        this.dictionaryTable = dictionaryTable;
     }
 
-    public void setBits(String bits) {
-        this.bits = bits;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setBitResult(List<Bit> bitResult) {
-        this.bitResult = bitResult;
+    public List<Bit> getBytes() {
+        return bytes;
     }
 
-    public List<Bit> getBitResult() {
-        return bitResult;
+    public Map<Integer, List<Bit>> getDictionaryTable() {
+        return dictionaryTable;
+    }
+
+    public static CompressionResultBuilder createBuilder() {
+        return new CompressionResultBuilder();
+    }
+
+    static CompressionResult createCompressionResult(CompressionResultBuilder resultBuilder) {
+        return new CompressionResult(resultBuilder.getFileName(), resultBuilder.getBitsResult(), resultBuilder.getDictionaryTable());
     }
 }
-
-     class ResultBuilder {
-        private String bits;
-        List<Bit> bitR = new ArrayList<>();
-
-        public ResultBuilder addBit(Bit bit) {
-            bitR.add(bit);
-            return this;
-        }
-
-        public CompressionResult build() {
-            CompressionResult result = new CompressionResult(bits);
-            result.setBitResult(bitR);
-            return result;
-
-        }
-    }
 
 
